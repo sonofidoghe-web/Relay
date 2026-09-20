@@ -46,10 +46,11 @@
     background:linear-gradient(160deg, var(--navy) 0%, var(--navy-3) 100%); }
   body.has-navbar{ padding-bottom:86px; }
 
-  /* ---------- HERO (login / signup / forgot / dashboard) ---------- */
+  /* ---------- HERO (login / signup / forgot / dashboard / app pages) ---------- */
   .hero{ background:linear-gradient(160deg, var(--navy) 0%, var(--navy-3) 100%); color:#fff;
     padding:34px 24px 78px; position:relative; overflow:hidden; }
   .hero.hero-compact{ padding:22px 0 60px; }
+  .hero.hero-page{ padding:20px 0 30px; }
   .hero::after{ content:""; position:absolute; right:-60px; top:-60px; width:260px; height:260px;
     border-radius:44% 56% 60% 40% / 50% 45% 55% 50%; background:rgba(255,255,255,0.06); }
   .hero-top{ display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; max-width:420px; margin:0 auto; }
@@ -58,6 +59,9 @@
   .hero-copy{ max-width:420px; margin:34px auto 0; position:relative; z-index:1; }
   .hero-copy h1{ font-size:1.65rem; color:#fff; }
   .hero-copy p{ margin-top:8px; color:rgba(255,255,255,0.72); font-size:0.98rem; }
+  .page-title-row{ display:flex; align-items:center; gap:12px; position:relative; z-index:1; }
+  .page-title-row h1{ font-size:1.15rem; color:#fff; flex-grow:1; text-align:center; }
+  .page-title-row .spacer{ width:38px; flex-shrink:0; }
 
   /* ---------- AUTH CARD ---------- */
   main.auth-main{ padding:0 20px 60px; margin-top:-52px; position:relative; z-index:2; }
@@ -70,12 +74,16 @@
 
   label{ display:block; font-size:0.85rem; font-weight:600; color:var(--ink); margin:0 0 8px; }
   .field{ margin-bottom:18px; }
-  .field input{ width:100%; padding:14px 16px; border-radius:14px; border:1.5px solid var(--line);
+  .field input, .field textarea, .field select{ width:100%; padding:14px 16px; border-radius:14px; border:1.5px solid var(--line);
     font-size:0.98rem; font-family:'Inter',sans-serif; color:var(--ink); background:var(--bg); outline:none;
     transition:border-color .2s ease, background .2s ease; }
-  .field input:focus{ border-color:var(--navy-3); background:#fff; }
-  .field input::placeholder{ color:#A3A9B7; }
+  .field textarea{ resize:vertical; min-height:100px; }
+  .field input:focus, .field textarea:focus, .field select:focus{ border-color:var(--navy-3); background:#fff; }
+  .field input::placeholder, .field textarea::placeholder{ color:#A3A9B7; }
   .hint{ font-size:0.78rem; color:var(--ink-soft); margin-top:6px; }
+  .check-row{ display:flex; gap:16px; flex-wrap:wrap; }
+  .check-row label{ display:flex; align-items:center; gap:7px; font-weight:500; font-size:0.9rem; color:var(--ink); margin:0; }
+  .check-row input{ accent-color:var(--navy-3); width:16px; height:16px; }
 
   .row-between{ display:flex; align-items:center; justify-content:space-between; margin:-6px 0 22px; }
   .remember{ display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--ink-soft); }
@@ -106,11 +114,16 @@
   .msg.show{ display:flex; }
   .msg-ok{ background:#E7F7EE; color:#0F6B3C; border:1px solid #BFE9D2; }
   .msg-err{ background:#FDECEC; color:#B3261E; border:1px solid #F6C4C1; }
+  .msg-info{ background:#FFF1DA; color:#96530A; border:1px solid #FFE0AC; display:flex; }
 
   .badge-row{ display:flex; gap:10px; justify-content:center; margin-top:26px; flex-wrap:wrap; }
   .badge{ display:flex; align-items:center; gap:6px; font-size:0.76rem; font-weight:600; color:var(--ink-soft);
     background:var(--bg); padding:7px 12px; border-radius:100px; }
   .badge-dot{ width:6px; height:6px; border-radius:50%; background:var(--amber); }
+  .status-pill{ display:inline-flex; align-items:center; gap:6px; font-size:0.76rem; font-weight:700; padding:5px 12px; border-radius:100px; }
+  .status-pill.st-none{ background:var(--bg); color:var(--ink-soft); }
+  .status-pill.st-requested{ background:#FFF1DA; color:#96530A; }
+  .status-pill.st-connected, .status-pill.st-queued{ background:#E7F7EE; color:#0F6B3C; }
 
   /* ---------- CHECK EMAIL ---------- */
   .icon-circle{ width:64px; height:64px; border-radius:50%; background:#FFF1DA; color:var(--amber);
@@ -134,12 +147,12 @@
   .confirm-card p{ color:var(--ink-soft); margin-top:10px; font-size:0.96rem; line-height:1.55; }
   [hidden]{ display:none !important; }
 
-  /* ---------- DASHBOARD ---------- */
+  /* ---------- DASHBOARD / APP PAGES ---------- */
   .greeting p{ margin:0; font-size:0.9rem; color:rgba(255,255,255,0.7); }
   .greeting h1{ font-size:1.3rem; color:#fff; margin-top:2px; }
   .hero-icons{ display:flex; gap:12px; position:relative; }
   .icon-btn{ width:38px; height:38px; border-radius:12px; background:rgba(255,255,255,0.12); border:none;
-    color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+    color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
   .icon-btn:hover{ background:rgba(255,255,255,0.2); }
   .menu{ position:absolute; top:46px; right:0; background:#fff; color:var(--ink); border-radius:14px;
     box-shadow:0 18px 36px -12px rgba(0,0,0,0.3); min-width:170px; padding:6px; display:none; z-index:20; }
@@ -155,6 +168,7 @@
   .channel-card .manage{ font-size:0.85rem; font-weight:600; color:#fff; text-decoration:none; display:flex;
     align-items:center; gap:4px; background:none; border:none; cursor:pointer; font-family:inherit; }
   main.dash-main{ margin-top:-40px; position:relative; z-index:2; padding:0 20px; }
+  main.page-main{ margin-top:0; padding:20px 20px 24px; max-width:460px; margin-left:auto; margin-right:auto; }
   .actions{ background:var(--card); border-radius:20px; padding:22px 16px; box-shadow:0 20px 40px -24px rgba(14,42,82,0.25);
     border:1px solid var(--line); display:grid; grid-template-columns:repeat(3,1fr); row-gap:22px; }
   .action{ display:flex; flex-direction:column; align-items:center; gap:8px; text-decoration:none; background:none;
@@ -172,7 +186,7 @@
     border-radius:16px; padding:14px 16px; }
   .activity-item .dot{ width:36px; height:36px; border-radius:50%; background:var(--amber-dim); color:#B26A00;
     display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .activity-item .body{ flex-grow:1; }
+  .activity-item .body{ flex-grow:1; min-width:0; }
   .activity-item .title{ font-size:0.92rem; font-weight:600; }
   .activity-item .time{ font-size:0.78rem; color:var(--ink-soft); margin-top:2px; }
   .empty-state{ text-align:center; padding:30px 16px; background:var(--card); border:1px dashed var(--line);
@@ -180,8 +194,9 @@
   .skeleton{ background:linear-gradient(90deg, var(--line) 25%, #EDF0F4 37%, var(--line) 63%); background-size:400% 100%;
     animation:shimmer 1.4s ease infinite; border-radius:16px; height:60px; }
   @keyframes shimmer{ 0%{ background-position:100% 50%; } 100%{ background-position:0 50%; } }
-  .bottom-nav{ position:fixed; left:0; right:0; bottom:0; z-index:30; background:var(--navy); display:flex;
+  .bottom-nav{ position:fixed; left:0; right:0; bottom:0; z-index:30; background:var(--navy); display:none;
     padding:10px 6px calc(10px + env(safe-area-inset-bottom, 0px)); box-shadow:0 -8px 24px -16px rgba(0,0,0,0.4); }
+  body.has-navbar .bottom-nav{ display:flex; }
   .nav-item{ flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 2px;
     text-decoration:none; color:rgba(255,255,255,0.55); font-size:0.68rem; font-weight:600; background:none;
     border:none; cursor:pointer; font-family:inherit; }
@@ -192,6 +207,22 @@
     pointer-events:none; transition:opacity .25s ease, transform .25s ease; max-width:88%; text-align:center; }
   #toast.show{ opacity:1; transform:translate(-50%, 0); }
   body.has-navbar #toast{ bottom:96px; }
+
+  /* ---------- APP PAGE LISTS (posts / channels / boosts / inbox) ---------- */
+  .plain-card{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; margin-bottom:14px; }
+  .list-item{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; background:var(--card);
+    border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin-bottom:10px; }
+  .list-item .main{ min-width:0; flex-grow:1; }
+  .list-item .main p{ margin:0; font-size:0.92rem; color:var(--ink); word-break:break-word; }
+  .list-item .meta{ font-size:0.76rem; color:var(--ink-soft); margin-top:6px; }
+  .channel-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 4px;
+    border-bottom:1px solid var(--line); }
+  .channel-row:last-child{ border-bottom:none; }
+  .channel-row .plat{ display:flex; align-items:center; gap:12px; }
+  .plat-icon{ width:40px; height:40px; border-radius:12px; background:var(--amber-dim); color:#B26A00;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .btn-small{ width:auto; padding:9px 16px; border-radius:100px; font-size:0.82rem; }
+  .list-title{ font-size:1rem; font-weight:600; margin:26px 0 4px; }
 </style>
 </head>
 <body>
@@ -419,7 +450,8 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </button>
             <div class="menu" id="dash-menu">
-              <a href="#" id="dash-settings-link">Settings</a>
+              <button type="button" data-goto="settings">Settings</button>
+              <button type="button" data-goto="tools">Tools (beta)</button>
               <button id="dash-logout-btn" type="button">Log out</button>
             </div>
           </div>
@@ -430,30 +462,30 @@
           <div class="label">Connected channels</div>
           <div class="value" id="dash-channel-count">—</div>
         </div>
-        <button class="manage" id="dash-manage-btn" type="button">Manage <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="manage" id="dash-manage-btn" type="button" data-goto="channels">Manage <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
   </header>
 
   <main class="dash-main">
     <div class="actions">
-      <button class="action" data-action="post">
+      <button class="action" data-goto="post">
         <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
         <span>New post</span>
       </button>
-      <button class="action" data-action="boost">
+      <button class="action" data-goto="boost">
         <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 14h6l-1 8 9-13h-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
         <span>Boost</span>
       </button>
-      <button class="action" data-action="numbers">
+      <button class="action" data-goto="sms-numbers">
         <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="7" y="2" width="10" height="20" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M11 18h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
         <span>SMS numbers</span>
       </button>
-      <button class="action" data-action="sms">
+      <button class="action" data-goto="send-sms">
         <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 12a8 8 0 1 1-3.35-6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M21 4v5h-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         <span>Send SMS</span>
       </button>
-      <button class="action" data-action="inbox">
+      <button class="action" data-goto="inbox">
         <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12h5l2 3h4l2-3h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="6" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>
         <span>Inbox</span>
       </button>
@@ -475,30 +507,246 @@
       <div id="dash-activity-list" class="activity-list"><div class="skeleton"></div></div>
     </div>
   </main>
-
-  <nav class="bottom-nav">
-    <button class="nav-item active" data-action="dashboard-active" type="button">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 11 12 4l8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9h12v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Dashboard
-    </button>
-    <button class="nav-item" data-action="channels" type="button">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="15" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="15" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
-      Channels
-    </button>
-    <button class="nav-item" data-action="boost" type="button">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 14h6l-1 8 9-13h-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-      Boost
-    </button>
-    <button class="nav-item" data-action="sms" type="button">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-      SMS
-    </button>
-    <button class="nav-item" data-action="settings" type="button">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2.1-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2.1 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9c.6.5 1.3.9 2.1 1.2L10 21h4l.5-2.6a7 7 0 0 0 2.1-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-      Settings
-    </button>
-  </nav>
 </div>
+
+<!-- ============ NEW POST ============ -->
+<div class="view" data-view="post">
+  <header class="hero hero-page">
+    <div class="wrap page-title-row">
+      <button class="icon-btn" type="button" data-goto="dashboard" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <h1>New post</h1>
+      <span class="spacer"></span>
+    </div>
+  </header>
+  <main class="page-main">
+    <div id="post-msg" class="msg msg-info show">Posts save here right away. Actually publishing to a platform needs that channel connected first — see Channels.</div>
+    <div class="plain-card">
+      <form id="post-form">
+        <div class="field">
+          <label for="post-content">What do you want to say?</label>
+          <textarea id="post-content" placeholder="Write your post…" required></textarea>
+        </div>
+        <div class="field">
+          <label>Platforms</label>
+          <div class="check-row">
+            <label><input type="checkbox" value="instagram" class="post-platform"> Instagram</label>
+            <label><input type="checkbox" value="facebook" class="post-platform"> Facebook</label>
+            <label><input type="checkbox" value="x" class="post-platform"> X</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="post-schedule">Schedule for (optional)</label>
+          <input id="post-schedule" type="datetime-local">
+        </div>
+        <button type="submit" id="post-submit-btn" class="btn btn-primary">Save post</button>
+      </form>
+    </div>
+    <h2 class="list-title">Your posts</h2>
+    <div id="post-list"><div class="skeleton"></div></div>
+  </main>
+</div>
+
+<!-- ============ CHANNELS ============ -->
+<div class="view" data-view="channels">
+  <header class="hero hero-page">
+    <div class="wrap page-title-row">
+      <button class="icon-btn" type="button" data-goto="dashboard" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <h1>Channels</h1>
+      <span class="spacer"></span>
+    </div>
+  </header>
+  <main class="page-main">
+    <div class="msg msg-info show">Real connections need a Meta/X developer app wired up on the backend. Requesting one here logs it — I'll finish the live connection once that's set up.</div>
+    <div class="plain-card" style="padding:6px 18px;" id="channels-list"><div class="skeleton" style="margin:14px 0;"></div></div>
+  </main>
+</div>
+
+<!-- ============ INBOX ============ -->
+<div class="view" data-view="inbox">
+  <header class="hero hero-page">
+    <div class="wrap page-title-row">
+      <button class="icon-btn" type="button" data-goto="dashboard" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <h1>Inbox</h1>
+      <span class="spacer"></span>
+    </div>
+  </header>
+  <main class="page-main">
+    <div id="inbox-list"><div class="skeleton"></div></div>
+    <button type="button" class="btn btn-outline" style="margin-top:16px;" data-goto="send-sms">Compose a text</button>
+  </main>
+</div>
+
+<!-- ============ BOOST ============ -->
+<div class="view" data-view="boost">
+  <header class="hero hero-page">
+    <div class="wrap page-title-row">
+      <button class="icon-btn" type="button" data-goto="dashboard" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <h1>Boost</h1>
+      <span class="spacer"></span>
+    </div>
+  </header>
+  <main class="page-main">
+    <div id="boost-msg" class="msg msg-info show">Boosting spends real ad budget once connected to Meta Ads. Requests here queue until that's wired up.</div>
+    <div class="plain-card">
+      <form id="boost-form">
+        <div class="field">
+          <label for="boost-post-select">Which post?</label>
+          <select id="boost-post-select" required><option value="">Create a post first</option></select>
+        </div>
+        <div class="field">
+          <label for="boost-budget">Daily budget (USD)</label>
+          <input id="boost-budget" type="number" min="1" step="1" placeholder="10" required>
+        </div>
+        <div class="field">
+          <label for="boost-goal">Goal</label>
+          <select id="boost-goal">
+            <option value="reach">Reach</option>
+            <option value="engagement">Engagement</option>
+            <option value="clicks">Clicks</option>
+          </select>
+        </div>
+        <button type="submit" id="boost-submit-btn" class="btn btn-primary">Request boost</button>
+      </form>
+    </div>
+    <h2 class="list-title">Requests</h2>
+    <div id="boost-list"><div class="skeleton"></div></div>
+  </main>
+</div>
+
+<!-- ============ SMS NUMBERS ============ -->
+<div class="view" data-view="sms-numbers">
+  <header class="hero hero-page">
+    <div class="wrap page-title-row">
+      <button class="icon-btn" type="button" data-goto="dashboard" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <h1>SMS numbers</h1>
+      <span class="spacer"></span>
+    </div>
+  </header>
+  <main class="page-main">
+    <div class="msg msg-info show">Renting a real number happens through Twilio (a few dollars a month), provisioned by a backend function. Requesting it here starts that process.</div>
+    <div class="plain-card">
+      <div class="label" style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:6px;">Your Relay number</div>
+      <div id="smsnum-status" style="font-family:'Fredoka',sans-serif; font-size:1.3rem; margin-bottom:16px;">—</div>
+      <button id="smsnum-request-btn" type="button" class="btn btn-primary">Request a number</button>
+      <div id="smsnum-msg" class="msg" style="margin-top:14px; margin-bottom:0;"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ============ SEND SMS ============ -->
+<div class="view" data-view="send-sms">
+  <header class="hero hero-page">
+    <div class="wrap page-title-row">
+      <button class="icon-btn" type="button" data-goto="dashboard" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <h1>Send SMS</h1>
+      <span class="spacer"></span>
+    </div>
+  </header>
+  <main class="page-main">
+    <div id="sms-msg" class="msg msg-info show">Messages queue here now. They'll actually send once your SMS number and backend are connected.</div>
+    <div class="plain-card">
+      <form id="sms-form">
+        <div class="field">
+          <label for="sms-to">Recipient phone number</label>
+          <input id="sms-to" type="tel" placeholder="+1 555 123 4567" required>
+        </div>
+        <div class="field">
+          <label for="sms-body">Message</label>
+          <textarea id="sms-body" placeholder="Type your message…" required></textarea>
+        </div>
+        <button type="submit" id="sms-submit-btn" class="btn btn-primary">Queue message</button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<!-- ============ TOOLS ============ -->
+<div class="view" data-view="tools">
+  <header class="hero hero-page">
+    <div class="wrap page-title-row">
+      <button class="icon-btn" type="button" data-goto="dashboard" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <h1>Tools</h1>
+      <span class="spacer"></span>
+    </div>
+  </header>
+  <main class="page-main">
+    <div class="plain-card center-text">
+      <div class="icon-circle" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4 4 0 0 1-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 1 5.4-5.4l-2.5 2.5-1.5-.4-.4-1.5 2.4-2.4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      </div>
+      <h1 style="font-size:1.2rem;">Private beta tools</h1>
+      <p style="color:var(--ink-soft); margin-top:10px; font-size:0.95rem;">A set of extra utilities we're rolling out gradually to early customers. Tell us you're interested and we'll turn it on for your account when it's ready.</p>
+      <button id="tools-request-btn" type="button" class="btn btn-primary" style="margin-top:20px;">Request access</button>
+    </div>
+  </main>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div class="view" data-view="settings">
+  <header class="hero hero-page">
+    <div class="wrap page-title-row">
+      <button class="icon-btn" type="button" data-goto="dashboard" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <h1>Settings</h1>
+      <span class="spacer"></span>
+    </div>
+  </header>
+  <main class="page-main">
+    <div id="settings-msg" class="msg" role="status"></div>
+    <div class="plain-card">
+      <form id="settings-form">
+        <div class="field">
+          <label for="settings-email">Account email</label>
+          <input id="settings-email" type="email" disabled>
+        </div>
+        <div class="field">
+          <label for="settings-business-name">Business name</label>
+          <input id="settings-business-name" type="text" placeholder="Your business name">
+        </div>
+        <button type="submit" id="settings-save-btn" class="btn btn-primary">Save</button>
+      </form>
+    </div>
+    <button id="settings-logout-btn" type="button" class="btn btn-outline" style="margin-top:14px;">Log out</button>
+  </main>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-item" data-goto="dashboard" type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 11 12 4l8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9h12v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Dashboard
+  </button>
+  <button class="nav-item" data-goto="channels" type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="15" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="15" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
+    Channels
+  </button>
+  <button class="nav-item" data-goto="boost" type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 14h6l-1 8 9-13h-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    Boost
+  </button>
+  <button class="nav-item" data-goto="send-sms" type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    SMS
+  </button>
+  <button class="nav-item" data-goto="settings" type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2.1-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2.1 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9c.6.5 1.3.9 2.1 1.2L10 21h4l.5-2.6a7 7 0 0 0 2.1-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    Settings
+  </button>
+</nav>
 
 <div id="toast" role="status"></div>
 
@@ -511,7 +759,7 @@
     applyActionCode, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset
   } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
   import {
-    getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs
+    getFirestore, doc, getDoc, setDoc, addDoc, collection, query, orderBy, limit, getDocs, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
   import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
 
@@ -531,8 +779,12 @@
   const googleProvider = new GoogleAuthProvider();
   isSupported().then((ok) => { if (ok) getAnalytics(app); }).catch(() => {});
 
-  // Absolute URL back to this same file, for email action links.
   const SELF_URL = window.location.origin + window.location.pathname;
+  const PLATFORMS = [
+    { id: "instagram", label: "Instagram" },
+    { id: "facebook", label: "Facebook" },
+    { id: "x", label: "X" }
+  ];
 
   // ---------- splash ----------
   document.documentElement.classList.add("rl-loading");
@@ -556,20 +808,27 @@
   }
 
   // ---------- view switching ----------
+  const APP_VIEWS = ["dashboard", "post", "channels", "inbox", "boost", "sms-numbers", "send-sms", "tools", "settings"];
   const views = document.querySelectorAll(".view");
+  const navItems = document.querySelectorAll(".nav-item");
   function showView(name){
     views.forEach((v) => v.classList.toggle("active", v.dataset.view === name));
-    document.body.classList.toggle("has-navbar", name === "dashboard");
+    document.body.classList.toggle("has-navbar", APP_VIEWS.includes(name));
+    navItems.forEach((n) => n.classList.toggle("active", n.dataset.goto === name));
     window.scrollTo(0, 0);
   }
   document.querySelectorAll("[data-goto]").forEach((el) => {
     el.addEventListener("click", (e) => {
       e.preventDefault();
       const target = el.dataset.goto;
-      location.hash = target;
-      showView(target);
+      if (location.hash.slice(1) === target) route();
+      else location.hash = target;
+      document.getElementById("dash-menu").classList.remove("open");
     });
   });
+  document.getElementById("dash-bell-btn").addEventListener("click", () => toast("Notifications aren't set up yet."));
+  document.getElementById("dash-stats-row").addEventListener("click", () => toast("Statistics isn't built yet — coming soon."));
+  document.querySelectorAll('[data-action="more"]').forEach((el) => el.addEventListener("click", () => toast("More is coming soon.")));
 
   function showMessage(el, text, kind){
     el.textContent = text;
@@ -586,6 +845,13 @@
       case "auth/weak-password": return "Please choose a password with at least 8 characters.";
       default: return err.message.replace("Firebase: ", "");
     }
+  }
+  async function logActivity(user, title){
+    try { await addDoc(collection(db, "users", user.uid, "activity"), { title, createdAt: serverTimestamp() }); }
+    catch (e) { /* best-effort */ }
+  }
+  function fmtTime(ts){
+    return ts && ts.toDate ? ts.toDate().toLocaleString() : "";
   }
 
   // ---------- login ----------
@@ -637,8 +903,6 @@
       return;
     }
 
-    // Account exists from this point on — always move to check-email,
-    // even if the verification email itself fails to send.
     document.getElementById("check-email-chip").textContent = email;
     try {
       await sendEmailVerification(cred.user, { url: SELF_URL });
@@ -652,7 +916,6 @@
   document.getElementById("signup-google-btn").addEventListener("click", async (e) => {
     const btn = e.currentTarget; btn.disabled = true;
     try {
-      // Google accounts are already verified, so this goes straight in.
       await signInWithPopup(auth, googleProvider);
       showMessage(signupMsg, "Account created. Redirecting…", "ok");
       setTimeout(() => { location.hash = "dashboard"; }, 900);
@@ -695,41 +958,16 @@
     forgotBtn.disabled = false; forgotBtn.textContent = "Send reset link";
   });
 
-  // ---------- dashboard: menu, logout, quick actions ----------
+  // ---------- dashboard: menu, logout ----------
   const dashMenuBtn = document.getElementById("dash-menu-btn");
   const dashMenu = document.getElementById("dash-menu");
   dashMenuBtn.addEventListener("click", () => dashMenu.classList.toggle("open"));
   document.addEventListener("click", (e) => {
     if (!dashMenu.contains(e.target) && e.target !== dashMenuBtn) dashMenu.classList.remove("open");
   });
-  document.getElementById("dash-logout-btn").addEventListener("click", async () => {
-    await signOut(auth);
-    location.hash = "login";
-  });
-  document.getElementById("dash-settings-link").addEventListener("click", (e) => {
-    e.preventDefault(); toast("Settings isn't built yet — coming soon.");
-  });
-  document.getElementById("dash-bell-btn").addEventListener("click", () => toast("Notifications aren't set up yet."));
-  document.getElementById("dash-manage-btn").addEventListener("click", () => toast("Channel management isn't built yet — coming soon."));
-  document.getElementById("dash-stats-row").addEventListener("click", () => toast("Statistics isn't built yet — coming soon."));
-
-  const actionLabels = {
-    post: "New post isn't built yet — coming soon.",
-    boost: "Boost isn't built yet — coming soon.",
-    numbers: "SMS numbers isn't built yet — coming soon.",
-    sms: "Send SMS isn't built yet — coming soon.",
-    inbox: "Inbox isn't built yet — coming soon.",
-    more: "More is coming soon.",
-    channels: "Channels isn't built yet — coming soon.",
-    settings: "Settings isn't built yet — coming soon."
-  };
-  document.querySelectorAll("[data-action]").forEach((el) => {
-    el.addEventListener("click", () => {
-      const key = el.dataset.action;
-      if (key === "dashboard-active") return;
-      toast(actionLabels[key] || "Coming soon.");
-    });
-  });
+  async function doLogout(){ await signOut(auth); location.hash = "login"; }
+  document.getElementById("dash-logout-btn").addEventListener("click", doLogout);
+  document.getElementById("settings-logout-btn").addEventListener("click", doLogout);
 
   function greetingWord(){
     const h = new Date().getHours();
@@ -742,7 +980,6 @@
     document.getElementById("dash-greeting-time").textContent = greetingWord();
     document.getElementById("dash-greeting-name").textContent =
       user.displayName || (user.email ? user.email.split("@")[0] : "there");
-
     try {
       const snap = await getDoc(doc(db, "users", user.uid));
       const data = snap.exists() ? snap.data() : {};
@@ -751,7 +988,6 @@
     } catch (err) {
       document.getElementById("dash-channel-count").textContent = "—";
     }
-
     const listEl = document.getElementById("dash-activity-list");
     try {
       const q = query(collection(db, "users", user.uid, "activity"), orderBy("createdAt", "desc"), limit(5));
@@ -762,16 +998,317 @@
         listEl.innerHTML = "";
         results.forEach((docSnap) => {
           const a = docSnap.data();
-          const when = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString() : "";
           const item = document.createElement("div");
           item.className = "activity-item";
-          item.innerHTML = `<div class="dot">•</div><div class="body"><div class="title">${(a.title || "Activity").toString()}</div><div class="time">${when}</div></div>`;
+          item.innerHTML = `<div class="dot">•</div><div class="body"><div class="title">${(a.title || "Activity").toString()}</div><div class="time">${fmtTime(a.createdAt)}</div></div>`;
           listEl.appendChild(item);
         });
       }
     } catch (err) {
       listEl.innerHTML = '<div class="empty-state">No activity yet. Connect a channel or send your first message to see it here.</div>';
     }
+  }
+
+  // ---------- NEW POST ----------
+  const postForm = document.getElementById("post-form");
+  const postBtn = document.getElementById("post-submit-btn");
+  postForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+    const content = document.getElementById("post-content").value.trim();
+    const platforms = Array.from(document.querySelectorAll(".post-platform:checked")).map((c) => c.value);
+    const scheduleVal = document.getElementById("post-schedule").value;
+    postBtn.disabled = true; postBtn.textContent = "Saving…";
+    try {
+      await addDoc(collection(db, "users", currentUser.uid, "posts"), {
+        content, platforms,
+        status: scheduleVal ? "scheduled" : "draft",
+        scheduledFor: scheduleVal || null,
+        createdAt: serverTimestamp()
+      });
+      await logActivity(currentUser, "Created a new post");
+      postForm.reset();
+      toast("Post saved.");
+      refreshPosts(currentUser);
+    } catch (err) {
+      toast(err.message.replace("Firebase: ", ""));
+    }
+    postBtn.disabled = false; postBtn.textContent = "Save post";
+  });
+  async function refreshPosts(user){
+    const listEl = document.getElementById("post-list");
+    try {
+      const q = query(collection(db, "users", user.uid, "posts"), orderBy("createdAt", "desc"), limit(20));
+      const results = await getDocs(q);
+      if (results.empty) {
+        listEl.innerHTML = '<div class="empty-state">No posts yet — write your first one above.</div>';
+        return [];
+      }
+      listEl.innerHTML = "";
+      const items = [];
+      results.forEach((docSnap) => {
+        const p = docSnap.data();
+        items.push({ id: docSnap.id, content: p.content });
+        const el = document.createElement("div");
+        el.className = "list-item";
+        const plat = (p.platforms || []).join(", ") || "No platform selected";
+        el.innerHTML = `<div class="main"><p>${(p.content || "").toString().slice(0,140)}</p><div class="meta">${plat} · ${fmtTime(p.createdAt)}</div></div><span class="status-pill st-${p.status === "draft" ? "none" : "requested"}">${p.status}</span>`;
+        listEl.appendChild(el);
+      });
+      return items;
+    } catch (err) {
+      listEl.innerHTML = '<div class="empty-state">No posts yet — write your first one above.</div>';
+      return [];
+    }
+  }
+
+  // ---------- CHANNELS ----------
+  async function refreshChannels(user){
+    const listEl = document.getElementById("channels-list");
+    listEl.innerHTML = "";
+    let connectedCount = 0;
+    for (const p of PLATFORMS) {
+      let status = "none";
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid, "channels", p.id));
+        if (snap.exists()) status = snap.data().status || "none";
+      } catch (err) { /* ignore */ }
+      if (status === "connected") connectedCount++;
+      const row = document.createElement("div");
+      row.className = "channel-row";
+      const btnLabel = status === "none" ? "Connect" : status === "requested" ? "Requested" : "Connected";
+      row.innerHTML = `
+        <div class="plat">
+          <span class="plat-icon">${p.label[0]}</span>
+          <div><div style="font-weight:600;">${p.label}</div><span class="status-pill st-${status}">${status}</span></div>
+        </div>
+        <button type="button" class="btn btn-outline btn-small" data-platform="${p.id}" ${status !== "none" ? "disabled" : ""}>${btnLabel}</button>`;
+      row.querySelector("button").addEventListener("click", async (e) => {
+        const btn = e.currentTarget;
+        btn.disabled = true; btn.textContent = "Requesting…";
+        try {
+          await setDoc(doc(db, "users", user.uid, "channels", p.id), { platform: p.id, status: "requested", requestedAt: serverTimestamp() }, { merge: true });
+          await logActivity(user, "Requested " + p.label + " connection");
+          toast(p.label + " connection requested.");
+          refreshChannels(user);
+        } catch (err) {
+          toast(err.message.replace("Firebase: ", ""));
+          btn.disabled = false; btn.textContent = btnLabel;
+        }
+      });
+      listEl.appendChild(row);
+    }
+    try {
+      await setDoc(doc(db, "users", user.uid), { connectedChannelsCount: connectedCount }, { merge: true });
+    } catch (err) { /* ignore */ }
+  }
+
+  // ---------- INBOX ----------
+  async function refreshInbox(user){
+    const listEl = document.getElementById("inbox-list");
+    try {
+      const q = query(collection(db, "users", user.uid, "messages"), orderBy("createdAt", "desc"), limit(20));
+      const results = await getDocs(q);
+      if (results.empty) {
+        listEl.innerHTML = '<div class="empty-state">No messages yet. This fills up once your SMS number is connected — queued outgoing texts show up here too.</div>';
+        return;
+      }
+      listEl.innerHTML = "";
+      results.forEach((docSnap) => {
+        const m = docSnap.data();
+        const el = document.createElement("div");
+        el.className = "list-item";
+        const who = m.direction === "out" ? ("To " + (m.to || "")) : ("From " + (m.from || ""));
+        el.innerHTML = `<div class="main"><p>${(m.body || "").toString()}</p><div class="meta">${who} · ${fmtTime(m.createdAt)}</div></div><span class="status-pill st-${m.status === "queued" ? "requested" : "connected"}">${m.status || "received"}</span>`;
+        listEl.appendChild(el);
+      });
+    } catch (err) {
+      listEl.innerHTML = '<div class="empty-state">No messages yet. This fills up once your SMS number is connected.</div>';
+    }
+  }
+
+  // ---------- BOOST ----------
+  const boostForm = document.getElementById("boost-form");
+  const boostBtn = document.getElementById("boost-submit-btn");
+  boostForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+    const postId = document.getElementById("boost-post-select").value;
+    const budget = Number(document.getElementById("boost-budget").value);
+    const goal = document.getElementById("boost-goal").value;
+    if (!postId) { toast("Create a post first, then come back to boost it."); return; }
+    boostBtn.disabled = true; boostBtn.textContent = "Requesting…";
+    try {
+      await addDoc(collection(db, "users", currentUser.uid, "boosts"), {
+        postId, budget, goal, status: "requested", createdAt: serverTimestamp()
+      });
+      await logActivity(currentUser, "Requested a boost ($" + budget + "/day)");
+      boostForm.reset();
+      toast("Boost request saved.");
+      refreshBoosts(currentUser);
+    } catch (err) {
+      toast(err.message.replace("Firebase: ", ""));
+    }
+    boostBtn.disabled = false; boostBtn.textContent = "Request boost";
+  });
+  async function refreshBoosts(user){
+    const posts = await refreshPostsForSelect(user);
+    const select = document.getElementById("boost-post-select");
+    select.innerHTML = posts.length
+      ? posts.map((p) => `<option value="${p.id}">${(p.content || "").slice(0,40) || "Untitled post"}</option>`).join("")
+      : '<option value="">Create a post first</option>';
+
+    const listEl = document.getElementById("boost-list");
+    try {
+      const q = query(collection(db, "users", user.uid, "boosts"), orderBy("createdAt", "desc"), limit(20));
+      const results = await getDocs(q);
+      if (results.empty) {
+        listEl.innerHTML = '<div class="empty-state">No boost requests yet.</div>';
+        return;
+      }
+      listEl.innerHTML = "";
+      results.forEach((docSnap) => {
+        const b = docSnap.data();
+        const el = document.createElement("div");
+        el.className = "list-item";
+        el.innerHTML = `<div class="main"><p>$${b.budget}/day · ${b.goal}</p><div class="meta">${fmtTime(b.createdAt)}</div></div><span class="status-pill st-requested">${b.status}</span>`;
+        listEl.appendChild(el);
+      });
+    } catch (err) {
+      listEl.innerHTML = '<div class="empty-state">No boost requests yet.</div>';
+    }
+  }
+  async function refreshPostsForSelect(user){
+    try {
+      const q = query(collection(db, "users", user.uid, "posts"), orderBy("createdAt", "desc"), limit(20));
+      const results = await getDocs(q);
+      const items = [];
+      results.forEach((docSnap) => items.push({ id: docSnap.id, content: docSnap.data().content }));
+      return items;
+    } catch (err) { return []; }
+  }
+
+  // ---------- SMS NUMBERS ----------
+  document.getElementById("smsnum-request-btn").addEventListener("click", async (e) => {
+    if (!currentUser) return;
+    const btn = e.currentTarget;
+    const msg = document.getElementById("smsnum-msg");
+    btn.disabled = true; btn.textContent = "Requesting…";
+    try {
+      await setDoc(doc(db, "users", currentUser.uid), { smsNumberStatus: "requested" }, { merge: true });
+      await logActivity(currentUser, "Requested an SMS number");
+      showMessage(msg, "Request saved. We'll provision a real number here once Twilio is connected on the backend.", "ok");
+      refreshSmsNumber(currentUser);
+    } catch (err) {
+      showMessage(msg, err.message.replace("Firebase: ", ""), "err");
+      btn.disabled = false; btn.textContent = "Request a number";
+    }
+  });
+  async function refreshSmsNumber(user){
+    const statusEl = document.getElementById("smsnum-status");
+    const btn = document.getElementById("smsnum-request-btn");
+    try {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      const data = snap.exists() ? snap.data() : {};
+      if (data.smsNumber) {
+        statusEl.textContent = data.smsNumber;
+        btn.hidden = true;
+      } else if (data.smsNumberStatus === "requested") {
+        statusEl.innerHTML = '<span class="status-pill st-requested">Requested</span>';
+        btn.disabled = true; btn.textContent = "Requested";
+      } else {
+        statusEl.innerHTML = '<span class="status-pill st-none">No number yet</span>';
+        btn.disabled = false; btn.textContent = "Request a number";
+      }
+    } catch (err) {
+      statusEl.textContent = "—";
+    }
+  }
+
+  // ---------- SEND SMS ----------
+  const smsForm = document.getElementById("sms-form");
+  const smsBtn = document.getElementById("sms-submit-btn");
+  const smsMsg = document.getElementById("sms-msg");
+  smsForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+    const to = document.getElementById("sms-to").value.trim();
+    const body = document.getElementById("sms-body").value.trim();
+    smsBtn.disabled = true; smsBtn.textContent = "Queuing…";
+    try {
+      await addDoc(collection(db, "users", currentUser.uid, "messages"), {
+        to, body, direction: "out", status: "queued", createdAt: serverTimestamp()
+      });
+      await logActivity(currentUser, "Queued a text to " + to);
+      smsForm.reset();
+      showMessage(smsMsg, "Message queued. It'll actually send once your SMS number is live.", "ok");
+    } catch (err) {
+      showMessage(smsMsg, err.message.replace("Firebase: ", ""), "err");
+    }
+    smsBtn.disabled = false; smsBtn.textContent = "Queue message";
+  });
+
+  // ---------- TOOLS ----------
+  document.getElementById("tools-request-btn").addEventListener("click", async (e) => {
+    if (!currentUser) return;
+    const btn = e.currentTarget;
+    btn.disabled = true; btn.textContent = "Requesting…";
+    try {
+      await setDoc(doc(db, "users", currentUser.uid), { toolsBetaRequested: true, toolsBetaRequestedAt: serverTimestamp() }, { merge: true });
+      await logActivity(currentUser, "Requested Tools private beta access");
+      btn.textContent = "You're on the list";
+      toast("You're on the list for Tools beta access.");
+    } catch (err) {
+      toast(err.message.replace("Firebase: ", ""));
+      btn.disabled = false; btn.textContent = "Request access";
+    }
+  });
+  async function refreshTools(user){
+    const btn = document.getElementById("tools-request-btn");
+    try {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      const data = snap.exists() ? snap.data() : {};
+      if (data.toolsBetaRequested) { btn.disabled = true; btn.textContent = "You're on the list"; }
+      else { btn.disabled = false; btn.textContent = "Request access"; }
+    } catch (err) { /* ignore */ }
+  }
+
+  // ---------- SETTINGS ----------
+  const settingsForm = document.getElementById("settings-form");
+  const settingsBtn = document.getElementById("settings-save-btn");
+  const settingsMsg = document.getElementById("settings-msg");
+  settingsForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+    const businessName = document.getElementById("settings-business-name").value.trim();
+    settingsBtn.disabled = true; settingsBtn.textContent = "Saving…";
+    try {
+      await setDoc(doc(db, "users", currentUser.uid), { businessName }, { merge: true });
+      showMessage(settingsMsg, "Saved.", "ok");
+    } catch (err) {
+      showMessage(settingsMsg, err.message.replace("Firebase: ", ""), "err");
+    }
+    settingsBtn.disabled = false; settingsBtn.textContent = "Save";
+  });
+  async function refreshSettings(user){
+    document.getElementById("settings-email").value = user.email || "";
+    try {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      const data = snap.exists() ? snap.data() : {};
+      document.getElementById("settings-business-name").value = data.businessName || "";
+    } catch (err) { /* ignore */ }
+  }
+
+  // ---------- page dispatcher ----------
+  async function loadPage(name, user){
+    if (name === "dashboard") return loadDashboard(user);
+    if (name === "post") return refreshPosts(user);
+    if (name === "channels") return refreshChannels(user);
+    if (name === "inbox") return refreshInbox(user);
+    if (name === "boost") return refreshBoosts(user);
+    if (name === "sms-numbers") return refreshSmsNumber(user);
+    if (name === "tools") return refreshTools(user);
+    if (name === "settings") return refreshSettings(user);
   }
 
   // ---------- verify-email / reset-password (email link landings) ----------
@@ -789,7 +1326,6 @@
       errorState.hidden = false;
     }
   }
-
   async function handleResetPassword(oobCode){
     const loading = document.getElementById("reset-loading");
     const formWrap = document.getElementById("reset-form-wrap");
@@ -799,7 +1335,6 @@
       const email = await verifyPasswordResetCode(auth, oobCode);
       document.getElementById("reset-for-email").textContent = "for " + email;
       loading.hidden = true; formWrap.hidden = false;
-
       document.getElementById("reset-form").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("reset-btn");
@@ -834,8 +1369,8 @@
 
     const hash = (location.hash || "").slice(1);
 
-    if (hash === "dashboard") {
-      if (currentUser) { showView("dashboard"); loadDashboard(currentUser); }
+    if (APP_VIEWS.includes(hash)) {
+      if (currentUser) { showView(hash); loadPage(hash, currentUser); }
       else { location.hash = "login"; }
       return;
     }
@@ -843,7 +1378,6 @@
       showView(hash);
       return;
     }
-    // no/unknown hash: send returning logged-in users straight to their dashboard
     if (currentUser) { location.hash = "dashboard"; }
     else { showView("login"); }
   }
