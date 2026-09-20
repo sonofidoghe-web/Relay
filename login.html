@@ -627,16 +627,27 @@
     const email = document.getElementById("signup-email").value.trim();
     const password = document.getElementById("signup-password").value;
     signupBtn.disabled = true; signupBtn.textContent = "Creating account…";
+
+    let cred;
     try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailVerification(cred.user, { url: SELF_URL });
-      showMessage(signupMsg, "Account created. Sending your confirmation link…", "ok");
-      document.getElementById("check-email-chip").textContent = email;
-      setTimeout(() => { showView("check-email"); }, 700);
+      cred = await createUserWithEmailAndPassword(auth, email, password);
     } catch (err) {
       showMessage(signupMsg, friendlyError(err), "err");
       signupBtn.disabled = false; signupBtn.textContent = "Create account";
+      return;
     }
+
+    // Account exists from this point on — always move to check-email,
+    // even if the verification email itself fails to send.
+    document.getElementById("check-email-chip").textContent = email;
+    try {
+      await sendEmailVerification(cred.user, { url: SELF_URL });
+    } catch (err) {
+      toast("Account created, but the confirmation email couldn't be sent: " + err.message.replace("Firebase: ", ""));
+    }
+    showView("check-email");
+    location.hash = "check-email";
+    signupBtn.disabled = false; signupBtn.textContent = "Create account";
   });
   document.getElementById("signup-google-btn").addEventListener("click", async (e) => {
     const btn = e.currentTarget; btn.disabled = true;
