@@ -1,0 +1,30 @@
+/* Shared boot splash — bouncing logo on a navy field, shown for ~2.2s on every page load. */
+html.rl-loading{ overflow:hidden; }
+html.rl-loading body{ opacity:0; }
+body{ transition:opacity .45s ease; }
+
+#rl-splash{
+  position:fixed; inset:0; z-index:9999;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(160deg, #0E2A52 0%, #1E4F94 100%);
+  transition:opacity .45s ease;
+}
+#rl-splash.rl-splash-out{ opacity:0; pointer-events:none; }
+
+.rl-splash-mark{
+  width:56px; height:56px;
+  border-radius:38% 62% 60% 40% / 45% 40% 60% 55%;
+  background:#F5A623;
+  animation:rl-bounce 1.1s ease-in-out infinite;
+}
+
+@keyframes rl-bounce{
+  0%, 100%{ transform:translateY(0); }
+  50%{ transform:translateY(-22px); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .rl-splash-mark{ animation:none; }
+  #rl-splash{ transition:none; }
+  html.rl-loading body{ opacity:1; }
+}
