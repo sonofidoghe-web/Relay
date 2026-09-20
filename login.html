@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in — Relay</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📡</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0E2A52;
+    --navy-2:#153E78;
+    --navy-3:#1E4F94;
+    --ink:#101828;
+    --ink-soft:#5C6577;
+    --bg:#F5F7FA;
+    --card:#FFFFFF;
+    --amber:#F5A623;
+    --amber-dim:#FFF1DA;
+    --line:rgba(16,24,40,0.10);
+    --line-soft:rgba(255,255,255,0.16);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    display:flex; flex-direction:column;
+  }
+  h1,h2{ font-family:'Fredoka',sans-serif; font-weight:600; margin:0; letter-spacing:-0.01em; }
+  a{ color:inherit; }
+
+  /* ---------- HERO / TOP ---------- */
+  .hero{
+    background:linear-gradient(160deg, var(--navy) 0%, var(--navy-3) 100%);
+    color:#fff; padding:34px 24px 78px; position:relative; overflow:hidden;
+  }
+  .hero::after{
+    content:""; position:absolute; right:-60px; top:-60px; width:260px; height:260px;
+    border-radius:44% 56% 60% 40% / 50% 45% 55% 50%;
+    background:rgba(255,255,255,0.06);
+  }
+  .hero-top{ display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; max-width:420px; margin:0 auto; }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.12rem; text-decoration:none; color:#fff; }
+  .brand-mark{
+    width:26px; height:26px; border-radius:38% 62% 60% 40% / 45% 40% 60% 55%;
+    background:var(--amber);
+  }
+  .hero-top a.back{ font-size:0.9rem; color:rgba(255,255,255,0.75); text-decoration:none; }
+  .hero-copy{ max-width:420px; margin:34px auto 0; position:relative; z-index:1; }
+  .hero-copy h1{ font-size:1.7rem; color:#fff; }
+  .hero-copy p{ margin-top:8px; color:rgba(255,255,255,0.72); font-size:0.98rem; }
+
+  /* ---------- CARD ---------- */
+  main{ flex-grow:1; padding:0 20px 60px; margin-top:-52px; position:relative; z-index:2; }
+  .card{
+    max-width:420px; margin:0 auto; background:var(--card);
+    border-radius:24px; padding:32px 26px 30px;
+    box-shadow:0 24px 48px -20px rgba(14,42,82,0.25);
+    border:1px solid var(--line);
+  }
+  .tabs{ display:flex; background:var(--bg); border-radius:100px; padding:4px; margin-bottom:26px; }
+  .tab{
+    flex:1; text-align:center; padding:10px 0; border-radius:100px;
+    font-size:0.92rem; font-weight:600; color:var(--ink-soft); text-decoration:none;
+    transition:background .2s ease, color .2s ease;
+  }
+  .tab.active{ background:var(--navy); color:#fff; }
+
+  label{ display:block; font-size:0.85rem; font-weight:600; color:var(--ink); margin:0 0 8px; }
+  .field{ margin-bottom:18px; }
+  .field input{
+    width:100%; padding:14px 16px; border-radius:14px; border:1.5px solid var(--line);
+    font-size:0.98rem; font-family:'Inter',sans-serif; color:var(--ink);
+    background:var(--bg); outline:none; transition:border-color .2s ease, background .2s ease;
+  }
+  .field input:focus{ border-color:var(--navy-3); background:#fff; }
+  .field input::placeholder{ color:#A3A9B7; }
+
+  .row-between{ display:flex; align-items:center; justify-content:space-between; margin:-6px 0 22px; }
+  .remember{ display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--ink-soft); }
+  .remember input{ accent-color:var(--navy-3); width:15px; height:15px; }
+  .forgot{ font-size:0.85rem; font-weight:600; color:var(--navy-3); text-decoration:none; }
+  .forgot:hover{ text-decoration:underline; }
+
+  .btn{
+    display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    padding:15px 20px; border-radius:14px; border:none; cursor:pointer;
+    font-size:0.98rem; font-weight:700; font-family:'Inter',sans-serif;
+    transition:transform .15s ease, background .2s ease;
+  }
+  .btn:active{ transform:scale(0.98); }
+  .btn-primary{ background:var(--navy); color:#fff; }
+  .btn-primary:hover{ background:var(--navy-3); }
+
+  .divider{ display:flex; align-items:center; gap:12px; margin:24px 0; color:var(--ink-soft); font-size:0.82rem; }
+  .divider::before, .divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+
+  .footer-note{ text-align:center; font-size:0.9rem; color:var(--ink-soft); }
+  .footer-note a{ color:var(--navy-3); font-weight:700; text-decoration:none; }
+  .footer-note a:hover{ text-decoration:underline; }
+
+  .badge-row{ display:flex; gap:10px; justify-content:center; margin-top:26px; flex-wrap:wrap; }
+  .badge{
+    display:flex; align-items:center; gap:6px; font-size:0.76rem; font-weight:600;
+    color:var(--ink-soft); background:var(--bg); padding:7px 12px; border-radius:100px;
+  }
+  .badge-dot{ width:6px; height:6px; border-radius:50%; background:var(--amber); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-top">
+    <a href="index.html" class="brand"><span class="brand-mark"></span>Relay</a>
+    <a href="index.html" class="back">← Back to site</a>
+  </div>
+  <div class="hero-copy">
+    <h1>Welcome back</h1>
+    <p>Log in to manage your social channels, boosts, and SMS number in one place.</p>
+  </div>
+</header>
+
+<main>
+  <div class="card">
+    <div class="tabs">
+      <a href="login.html" class="tab active">Log in</a>
+      <a href="signup.html" class="tab">Create account</a>
+    </div>
+
+    <form onsubmit="return false;">
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" type="email" placeholder="you@business.com" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+      </div>
+
+      <div class="row-between">
+        <label class="remember"><input type="checkbox"> Remember me</label>
+        <a href="forgot-password.html" class="forgot">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Log in</button>
+    </form>
+
+    <div class="divider">or</div>
+
+    <p class="footer-note">New to Relay? <a href="signup.html">Create an account</a></p>
+  </div>
+
+  <div class="badge-row">
+    <span class="badge"><span class="badge-dot"></span>Secured with Firebase Auth</span>
+  </div>
+</main>
+
+</body>
+</html>
