@@ -3,200 +3,578 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Log in — Relay</title>
+<title>Relay</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📡</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/splash.css">
 <style>
   :root{
-    --navy:#0E2A52;
-    --navy-2:#153E78;
-    --navy-3:#1E4F94;
-    --ink:#101828;
-    --ink-soft:#5C6577;
-    --bg:#F5F7FA;
-    --card:#FFFFFF;
-    --amber:#F5A623;
-    --amber-dim:#FFF1DA;
-    --line:rgba(16,24,40,0.10);
-    --line-soft:rgba(255,255,255,0.16);
+    --navy:#0E2A52; --navy-2:#153E78; --navy-3:#1E4F94;
+    --ink:#101828; --ink-soft:#5C6577; --bg:#F5F7FA; --card:#FFFFFF;
+    --amber:#F5A623; --amber-dim:#FFF1DA; --line:rgba(16,24,40,0.10);
   }
   *{box-sizing:border-box;}
+  html.rl-loading{ overflow:hidden; }
+  html.rl-loading body{ opacity:0; }
   body{
     margin:0; min-height:100vh; background:var(--bg); color:var(--ink);
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-    display:flex; flex-direction:column;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; line-height:1.5;
+    -webkit-font-smoothing:antialiased; transition:opacity .45s ease;
   }
-  h1,h2{ font-family:'Fredoka',sans-serif; font-weight:600; margin:0; letter-spacing:-0.01em; }
+  h1,h2,h3{ font-family:'Fredoka',sans-serif; font-weight:600; margin:0; letter-spacing:-0.01em; }
   a{ color:inherit; }
+  button{ font-family:inherit; }
+  .wrap{ max-width:460px; margin:0 auto; padding:0 20px; }
 
-  /* ---------- HERO / TOP ---------- */
-  .hero{
-    background:linear-gradient(160deg, var(--navy) 0%, var(--navy-3) 100%);
-    color:#fff; padding:34px 24px 78px; position:relative; overflow:hidden;
+  /* ---------- SPLASH ---------- */
+  #rl-splash{
+    position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(160deg, #0E2A52 0%, #1E4F94 100%); transition:opacity .45s ease;
   }
-  .hero::after{
-    content:""; position:absolute; right:-60px; top:-60px; width:260px; height:260px;
-    border-radius:44% 56% 60% 40% / 50% 45% 55% 50%;
-    background:rgba(255,255,255,0.06);
-  }
+  #rl-splash.rl-splash-out{ opacity:0; pointer-events:none; }
+  .rl-splash-mark{ width:56px; height:56px; border-radius:38% 62% 60% 40% / 45% 40% 60% 55%;
+    background:var(--amber); animation:rl-bounce 1.1s ease-in-out infinite; }
+  @keyframes rl-bounce{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-22px);} }
+  @media (prefers-reduced-motion: reduce){ .rl-splash-mark{ animation:none; } #rl-splash{ transition:none; } html.rl-loading body{ opacity:1; } }
+
+  /* ---------- VIEW SWITCHING ---------- */
+  .view{ display:none; }
+  .view.active{ display:block; }
+  .view-center{ }
+  .view-center.active{ display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px;
+    background:linear-gradient(160deg, var(--navy) 0%, var(--navy-3) 100%); }
+  body.has-navbar{ padding-bottom:86px; }
+
+  /* ---------- HERO (login / signup / forgot / dashboard) ---------- */
+  .hero{ background:linear-gradient(160deg, var(--navy) 0%, var(--navy-3) 100%); color:#fff;
+    padding:34px 24px 78px; position:relative; overflow:hidden; }
+  .hero.hero-compact{ padding:22px 0 60px; }
+  .hero::after{ content:""; position:absolute; right:-60px; top:-60px; width:260px; height:260px;
+    border-radius:44% 56% 60% 40% / 50% 45% 55% 50%; background:rgba(255,255,255,0.06); }
   .hero-top{ display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; max-width:420px; margin:0 auto; }
-  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.12rem; text-decoration:none; color:#fff; }
-  .brand-mark{
-    width:26px; height:26px; border-radius:38% 62% 60% 40% / 45% 40% 60% 55%;
-    background:var(--amber);
-  }
-  .hero-top a.back{ font-size:0.9rem; color:rgba(255,255,255,0.75); text-decoration:none; }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.12rem; text-decoration:none; color:#fff; cursor:default; }
+  .brand-mark{ width:26px; height:26px; border-radius:38% 62% 60% 40% / 45% 40% 60% 55%; background:var(--amber); flex-shrink:0; }
   .hero-copy{ max-width:420px; margin:34px auto 0; position:relative; z-index:1; }
-  .hero-copy h1{ font-size:1.7rem; color:#fff; }
+  .hero-copy h1{ font-size:1.65rem; color:#fff; }
   .hero-copy p{ margin-top:8px; color:rgba(255,255,255,0.72); font-size:0.98rem; }
 
-  /* ---------- CARD ---------- */
-  main{ flex-grow:1; padding:0 20px 60px; margin-top:-52px; position:relative; z-index:2; }
-  .card{
-    max-width:420px; margin:0 auto; background:var(--card);
-    border-radius:24px; padding:32px 26px 30px;
-    box-shadow:0 24px 48px -20px rgba(14,42,82,0.25);
-    border:1px solid var(--line);
-  }
+  /* ---------- AUTH CARD ---------- */
+  main.auth-main{ padding:0 20px 60px; margin-top:-52px; position:relative; z-index:2; }
+  .card{ max-width:420px; margin:0 auto; background:var(--card); border-radius:24px; padding:32px 26px 30px;
+    box-shadow:0 24px 48px -20px rgba(14,42,82,0.25); border:1px solid var(--line); }
   .tabs{ display:flex; background:var(--bg); border-radius:100px; padding:4px; margin-bottom:26px; }
-  .tab{
-    flex:1; text-align:center; padding:10px 0; border-radius:100px;
-    font-size:0.92rem; font-weight:600; color:var(--ink-soft); text-decoration:none;
-    transition:background .2s ease, color .2s ease;
-  }
+  .tab{ flex:1; text-align:center; padding:10px 0; border-radius:100px; font-size:0.92rem; font-weight:600;
+    color:var(--ink-soft); text-decoration:none; background:none; border:none; cursor:pointer; transition:background .2s ease, color .2s ease; }
   .tab.active{ background:var(--navy); color:#fff; }
 
   label{ display:block; font-size:0.85rem; font-weight:600; color:var(--ink); margin:0 0 8px; }
   .field{ margin-bottom:18px; }
-  .field input{
-    width:100%; padding:14px 16px; border-radius:14px; border:1.5px solid var(--line);
-    font-size:0.98rem; font-family:'Inter',sans-serif; color:var(--ink);
-    background:var(--bg); outline:none; transition:border-color .2s ease, background .2s ease;
-  }
+  .field input{ width:100%; padding:14px 16px; border-radius:14px; border:1.5px solid var(--line);
+    font-size:0.98rem; font-family:'Inter',sans-serif; color:var(--ink); background:var(--bg); outline:none;
+    transition:border-color .2s ease, background .2s ease; }
   .field input:focus{ border-color:var(--navy-3); background:#fff; }
   .field input::placeholder{ color:#A3A9B7; }
+  .hint{ font-size:0.78rem; color:var(--ink-soft); margin-top:6px; }
 
   .row-between{ display:flex; align-items:center; justify-content:space-between; margin:-6px 0 22px; }
   .remember{ display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--ink-soft); }
   .remember input{ accent-color:var(--navy-3); width:15px; height:15px; }
-  .forgot{ font-size:0.85rem; font-weight:600; color:var(--navy-3); text-decoration:none; }
+  .forgot{ font-size:0.85rem; font-weight:600; color:var(--navy-3); text-decoration:none; background:none; border:none; cursor:pointer; padding:0; }
   .forgot:hover{ text-decoration:underline; }
 
-  .btn{
-    display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
-    padding:15px 20px; border-radius:14px; border:none; cursor:pointer;
-    font-size:0.98rem; font-weight:700; font-family:'Inter',sans-serif;
-    transition:transform .15s ease, background .2s ease;
-  }
+  .btn{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:15px 20px;
+    border-radius:14px; border:none; cursor:pointer; font-size:0.98rem; font-weight:700; font-family:'Inter',sans-serif;
+    transition:transform .15s ease, background .2s ease; }
   .btn:active{ transform:scale(0.98); }
   .btn-primary{ background:var(--navy); color:#fff; }
   .btn-primary:hover{ background:var(--navy-3); }
+  .btn[disabled]{ opacity:.65; cursor:not-allowed; }
+  .btn-google{ background:#fff; color:var(--ink); border:1.5px solid var(--line); margin-top:12px; }
+  .btn-google:hover{ border-color:#C7CCD6; background:#FAFBFC; }
+  .btn-outline{ background:#fff; color:var(--navy); border:1.5px solid var(--line); }
+  .btn-outline:hover{ border-color:var(--navy-3); }
 
   .divider{ display:flex; align-items:center; gap:12px; margin:24px 0; color:var(--ink-soft); font-size:0.82rem; }
   .divider::before, .divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+  .footer-note{ text-align:center; font-size:0.9rem; color:var(--ink-soft); margin-top:18px; }
+  .footer-note a{ color:var(--navy-3); font-weight:700; text-decoration:none; background:none; border:none; cursor:pointer; font-size:inherit; font-family:inherit; padding:0; }
+  .footer-note a:hover{ text-decoration:underline; }
 
-  .msg{
-    display:none; align-items:flex-start; gap:10px;
-    font-size:0.86rem; font-weight:500; line-height:1.4;
-    padding:12px 14px; border-radius:12px; margin-bottom:18px;
-  }
+  .msg{ display:none; align-items:flex-start; gap:10px; font-size:0.86rem; font-weight:500; line-height:1.4;
+    padding:12px 14px; border-radius:12px; margin-bottom:18px; }
   .msg.show{ display:flex; }
   .msg-ok{ background:#E7F7EE; color:#0F6B3C; border:1px solid #BFE9D2; }
   .msg-err{ background:#FDECEC; color:#B3261E; border:1px solid #F6C4C1; }
 
-  .btn-google{
-    background:#fff; color:var(--ink); border:1.5px solid var(--line); margin-top:12px;
-  }
-  .btn-google:hover{ border-color:#C7CCD6; background:#FAFBFC; }
-  .btn[disabled]{ opacity:.65; cursor:not-allowed; }
-
-  .footer-note{ text-align:center; font-size:0.9rem; color:var(--ink-soft); }
-  .footer-note a{ color:var(--navy-3); font-weight:700; text-decoration:none; }
-  .footer-note a:hover{ text-decoration:underline; }
-
   .badge-row{ display:flex; gap:10px; justify-content:center; margin-top:26px; flex-wrap:wrap; }
-  .badge{
-    display:flex; align-items:center; gap:6px; font-size:0.76rem; font-weight:600;
-    color:var(--ink-soft); background:var(--bg); padding:7px 12px; border-radius:100px;
-  }
+  .badge{ display:flex; align-items:center; gap:6px; font-size:0.76rem; font-weight:600; color:var(--ink-soft);
+    background:var(--bg); padding:7px 12px; border-radius:100px; }
   .badge-dot{ width:6px; height:6px; border-radius:50%; background:var(--amber); }
+
+  /* ---------- CHECK EMAIL ---------- */
+  .icon-circle{ width:64px; height:64px; border-radius:50%; background:#FFF1DA; color:var(--amber);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 20px; }
+  .email-chip{ display:inline-block; margin-top:14px; padding:8px 16px; border-radius:100px; background:var(--bg);
+    font-weight:600; font-size:0.9rem; color:var(--navy); }
+  .steps{ text-align:left; margin:26px 0 0; padding:0; list-style:none; }
+  .steps li{ display:flex; gap:10px; font-size:0.9rem; color:var(--ink-soft); padding:9px 0; border-top:1px solid var(--line); }
+  .steps li:first-child{ border-top:none; }
+  .steps b{ color:var(--ink); font-weight:600; }
+  .center-text{ text-align:center; }
+
+  /* ---------- VERIFY / RESET confirmation card ---------- */
+  .confirm-card{ max-width:400px; width:100%; background:#fff; color:var(--ink); border-radius:24px;
+    padding:44px 30px; text-align:center; box-shadow:0 24px 48px -20px rgba(0,0,0,0.35); }
+  .confirm-mark{ width:44px; height:44px; margin:0 auto 22px; border-radius:38% 62% 60% 40% / 45% 40% 60% 55%;
+    background:var(--amber); animation:rl-bounce 1.1s ease-in-out infinite; }
+  .check{ width:56px; height:56px; margin:0 auto 20px; border-radius:50%; background:#E7F7EE; color:#0F6B3C;
+    display:flex; align-items:center; justify-content:center; }
+  .err-icon{ background:#FDECEC; color:#B3261E; }
+  .confirm-card p{ color:var(--ink-soft); margin-top:10px; font-size:0.96rem; line-height:1.55; }
+  [hidden]{ display:none !important; }
+
+  /* ---------- DASHBOARD ---------- */
+  .greeting p{ margin:0; font-size:0.9rem; color:rgba(255,255,255,0.7); }
+  .greeting h1{ font-size:1.3rem; color:#fff; margin-top:2px; }
+  .hero-icons{ display:flex; gap:12px; position:relative; }
+  .icon-btn{ width:38px; height:38px; border-radius:12px; background:rgba(255,255,255,0.12); border:none;
+    color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .icon-btn:hover{ background:rgba(255,255,255,0.2); }
+  .menu{ position:absolute; top:46px; right:0; background:#fff; color:var(--ink); border-radius:14px;
+    box-shadow:0 18px 36px -12px rgba(0,0,0,0.3); min-width:170px; padding:6px; display:none; z-index:20; }
+  .menu.open{ display:block; }
+  .menu a, .menu button{ display:block; width:100%; text-align:left; padding:10px 12px; border-radius:9px;
+    font-size:0.9rem; font-weight:500; text-decoration:none; color:var(--ink); background:none; border:none; cursor:pointer; }
+  .menu a:hover, .menu button:hover{ background:var(--bg); }
+  .channel-card{ margin-top:24px; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.16);
+    border-radius:18px; padding:18px 20px; position:relative; z-index:1; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; }
+  .channel-card .label{ font-size:0.82rem; color:rgba(255,255,255,0.7); }
+  .channel-card .value{ font-family:'Fredoka',sans-serif; font-size:1.35rem; margin-top:4px; }
+  .channel-card .manage{ font-size:0.85rem; font-weight:600; color:#fff; text-decoration:none; display:flex;
+    align-items:center; gap:4px; background:none; border:none; cursor:pointer; font-family:inherit; }
+  main.dash-main{ margin-top:-40px; position:relative; z-index:2; padding:0 20px; }
+  .actions{ background:var(--card); border-radius:20px; padding:22px 16px; box-shadow:0 20px 40px -24px rgba(14,42,82,0.25);
+    border:1px solid var(--line); display:grid; grid-template-columns:repeat(3,1fr); row-gap:22px; }
+  .action{ display:flex; flex-direction:column; align-items:center; gap:8px; text-decoration:none; background:none;
+    border:none; cursor:pointer; font-family:inherit; }
+  .action .circle{ width:52px; height:52px; border-radius:50%; background:var(--amber-dim); color:#B26A00;
+    display:flex; align-items:center; justify-content:center; }
+  .action span{ font-size:0.78rem; font-weight:600; color:var(--ink); text-align:center; }
+  .section{ margin-top:28px; }
+  .section-row{ display:flex; align-items:center; justify-content:space-between; padding:14px 4px; background:none;
+    border:none; width:100%; cursor:pointer; font-family:inherit; }
+  .section-row h2{ font-size:1rem; }
+  .section-row svg{ color:var(--ink-soft); }
+  .activity-list{ display:flex; flex-direction:column; gap:10px; }
+  .activity-item{ display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--line);
+    border-radius:16px; padding:14px 16px; }
+  .activity-item .dot{ width:36px; height:36px; border-radius:50%; background:var(--amber-dim); color:#B26A00;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .activity-item .body{ flex-grow:1; }
+  .activity-item .title{ font-size:0.92rem; font-weight:600; }
+  .activity-item .time{ font-size:0.78rem; color:var(--ink-soft); margin-top:2px; }
+  .empty-state{ text-align:center; padding:30px 16px; background:var(--card); border:1px dashed var(--line);
+    border-radius:16px; color:var(--ink-soft); font-size:0.9rem; }
+  .skeleton{ background:linear-gradient(90deg, var(--line) 25%, #EDF0F4 37%, var(--line) 63%); background-size:400% 100%;
+    animation:shimmer 1.4s ease infinite; border-radius:16px; height:60px; }
+  @keyframes shimmer{ 0%{ background-position:100% 50%; } 100%{ background-position:0 50%; } }
+  .bottom-nav{ position:fixed; left:0; right:0; bottom:0; z-index:30; background:var(--navy); display:flex;
+    padding:10px 6px calc(10px + env(safe-area-inset-bottom, 0px)); box-shadow:0 -8px 24px -16px rgba(0,0,0,0.4); }
+  .nav-item{ flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 2px;
+    text-decoration:none; color:rgba(255,255,255,0.55); font-size:0.68rem; font-weight:600; background:none;
+    border:none; cursor:pointer; font-family:inherit; }
+  .nav-item.active{ color:var(--amber); }
+
+  #toast{ position:fixed; left:50%; bottom:24px; transform:translate(-50%, 20px); z-index:9000; background:var(--ink);
+    color:#fff; font-size:0.86rem; font-weight:500; padding:12px 18px; border-radius:100px; opacity:0;
+    pointer-events:none; transition:opacity .25s ease, transform .25s ease; max-width:88%; text-align:center; }
+  #toast.show{ opacity:1; transform:translate(-50%, 0); }
+  body.has-navbar #toast{ bottom:96px; }
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="hero-top">
-    <a href="index.html" class="brand"><span class="brand-mark"></span>Relay</a>
-    <a href="index.html" class="back">← Back to site</a>
-  </div>
-  <div class="hero-copy">
-    <h1>Welcome back</h1>
-    <p>Log in to manage your social channels, boosts, and SMS number in one place.</p>
-  </div>
-</header>
+<div id="rl-splash" role="status" aria-label="Loading Relay"><div class="rl-splash-mark"></div></div>
 
-<main>
-  <div class="card">
-    <div class="tabs">
-      <a href="login.html" class="tab active">Log in</a>
-      <a href="signup.html" class="tab">Create account</a>
+<!-- ============ LOGIN ============ -->
+<div class="view" data-view="login">
+  <header class="hero">
+    <div class="hero-top">
+      <span class="brand"><span class="brand-mark"></span>Relay</span>
+    </div>
+    <div class="hero-copy">
+      <h1>Welcome back</h1>
+      <p>Log in to manage your social channels, boosts, and SMS number in one place.</p>
+    </div>
+  </header>
+  <main class="auth-main">
+    <div class="card">
+      <div class="tabs">
+        <button class="tab active" type="button" data-goto="login">Log in</button>
+        <button class="tab" type="button" data-goto="signup">Create account</button>
+      </div>
+
+      <div id="login-msg" class="msg" role="status"></div>
+
+      <form id="login-form">
+        <div class="field">
+          <label for="login-email">Email address</label>
+          <input id="login-email" type="email" placeholder="you@business.com" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+        </div>
+        <div class="row-between">
+          <label class="remember"><input type="checkbox"> Remember me</label>
+          <button type="button" class="forgot" data-goto="forgot-password">Forgot password?</button>
+        </div>
+        <button type="submit" id="login-btn" class="btn btn-primary">Log in</button>
+      </form>
+
+      <div class="divider">or</div>
+
+      <button type="button" id="login-google-btn" class="btn btn-google">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.87 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.81.54-1.85.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.03l2.99-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.97l2.99 2.33C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+        Continue with Google
+      </button>
+
+      <p class="footer-note">New to Relay? <button type="button" data-goto="signup">Create an account</button></p>
+    </div>
+    <div class="badge-row"><span class="badge"><span class="badge-dot"></span>Secured with Firebase Auth</span></div>
+  </main>
+</div>
+
+<!-- ============ SIGNUP ============ -->
+<div class="view" data-view="signup">
+  <header class="hero">
+    <div class="hero-top">
+      <span class="brand"><span class="brand-mark"></span>Relay</span>
+    </div>
+    <div class="hero-copy">
+      <h1>Create your account</h1>
+      <p>Set up Relay and connect your first channel in a couple of minutes.</p>
+    </div>
+  </header>
+  <main class="auth-main">
+    <div class="card">
+      <div class="tabs">
+        <button class="tab" type="button" data-goto="login">Log in</button>
+        <button class="tab active" type="button" data-goto="signup">Create account</button>
+      </div>
+
+      <div id="signup-msg" class="msg" role="status"></div>
+
+      <form id="signup-form">
+        <div class="field">
+          <label for="signup-email">Email address</label>
+          <input id="signup-email" type="email" placeholder="you@business.com" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="signup-password">Password</label>
+          <input id="signup-password" type="password" placeholder="At least 8 characters" autocomplete="new-password" minlength="8" required>
+          <div class="hint">Use at least 8 characters.</div>
+        </div>
+        <button type="submit" id="signup-btn" class="btn btn-primary">Create account</button>
+      </form>
+
+      <div class="divider">or</div>
+
+      <button type="button" id="signup-google-btn" class="btn btn-google">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.87 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.81.54-1.85.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.03l2.99-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.97l2.99 2.33C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+        Continue with Google
+      </button>
+
+      <p class="footer-note">Already have an account? <button type="button" data-goto="login">Log in</button></p>
+    </div>
+  </main>
+</div>
+
+<!-- ============ CHECK EMAIL ============ -->
+<div class="view" data-view="check-email">
+  <header class="hero">
+    <div class="hero-top">
+      <span class="brand"><span class="brand-mark"></span>Relay</span>
+      <button type="button" class="forgot" style="color:rgba(255,255,255,0.75);" data-goto="login">← Back to log in</button>
+    </div>
+  </header>
+  <main class="auth-main" style="display:flex;">
+    <div class="card center-text">
+      <div class="icon-circle" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M3 6.5 12 13l9-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="2"/></svg>
+      </div>
+      <h1>Confirm your email</h1>
+      <p style="color:var(--ink-soft); margin-top:10px;">We've sent a confirmation link to</p>
+      <span class="email-chip" id="check-email-chip">your email</span>
+
+      <ul class="steps">
+        <li><b>1.</b>&nbsp;Open the email and tap the confirmation link.</li>
+        <li><b>2.</b>&nbsp;Don't see it? Check your spam or junk folder.</li>
+        <li><b>3.</b>&nbsp;Found it there? Mark it "not spam" so future emails from us land straight in your inbox.</li>
+      </ul>
+
+      <button id="resend-btn" type="button" class="btn btn-outline" style="margin-top:26px;">Resend confirmation link</button>
+      <div id="resend-msg" class="msg" style="margin-top:14px; margin-bottom:0;"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ============ VERIFY EMAIL (email-link landing) ============ -->
+<div class="view view-center" data-view="verify-email">
+  <div class="confirm-card">
+    <div id="verify-loading">
+      <div class="confirm-mark" aria-hidden="true"></div>
+      <h1>Confirming your account…</h1>
+      <p>Hang tight, this only takes a second.</p>
+    </div>
+    <div id="verify-success" hidden>
+      <div class="check" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 12.5 9.5 18 20 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h1>Your account has been created successfully</h1>
+      <p>Taking you to log in…</p>
+    </div>
+    <div id="verify-error" hidden>
+      <div class="check err-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+      <h1>This link didn't work</h1>
+      <p id="verify-error-text">It may have expired or already been used.</p>
+      <button type="button" class="btn btn-primary" style="margin-top:22px;" data-goto="login">Back to log in</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FORGOT PASSWORD ============ -->
+<div class="view" data-view="forgot-password">
+  <header class="hero">
+    <div class="hero-top">
+      <span class="brand"><span class="brand-mark"></span>Relay</span>
+      <button type="button" class="forgot" style="color:rgba(255,255,255,0.75);" data-goto="login">← Back to log in</button>
+    </div>
+    <div class="hero-copy">
+      <h1>Reset your password</h1>
+      <p>Enter the email on your account and we'll send you a link to set a new password.</p>
+    </div>
+  </header>
+  <main class="auth-main">
+    <div class="card">
+      <div id="forgot-msg" class="msg" role="status"></div>
+      <form id="forgot-form">
+        <div class="field">
+          <label for="forgot-email">Email address</label>
+          <input id="forgot-email" type="email" placeholder="you@business.com" autocomplete="email" required>
+        </div>
+        <button type="submit" id="forgot-btn" class="btn btn-primary">Send reset link</button>
+      </form>
+      <p class="footer-note">Remembered it? <button type="button" data-goto="login">Log in</button></p>
+    </div>
+  </main>
+</div>
+
+<!-- ============ RESET PASSWORD (email-link landing) ============ -->
+<div class="view view-center" data-view="reset-password">
+  <div class="confirm-card">
+    <div id="reset-loading">
+      <div class="confirm-mark" aria-hidden="true"></div>
+      <h1>Checking your link…</h1>
+    </div>
+    <div id="reset-form-wrap" hidden>
+      <h1>Set a new password</h1>
+      <p id="reset-for-email"></p>
+      <form id="reset-form">
+        <label for="reset-password-input" style="text-align:left; margin-top:18px;">New password</label>
+        <input id="reset-password-input" type="password" minlength="8" placeholder="At least 8 characters" required
+          style="width:100%; padding:14px 16px; border-radius:14px; border:1.5px solid var(--line); font-size:0.98rem; background:var(--bg); outline:none;">
+        <button type="submit" id="reset-btn" class="btn btn-primary" style="margin-top:22px;">Set new password</button>
+      </form>
+    </div>
+    <div id="reset-success" hidden>
+      <div class="check" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 12.5 9.5 18 20 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h1>Your password has been reset</h1>
+      <p>Taking you to log in…</p>
+    </div>
+    <div id="reset-error" hidden>
+      <div class="check err-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+      <h1>This link didn't work</h1>
+      <p id="reset-error-text">It may have expired or already been used.</p>
+      <button type="button" class="btn btn-primary" style="margin-top:22px;" data-goto="forgot-password">Request a new link</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div class="view" data-view="dashboard">
+  <header class="hero hero-compact">
+    <div class="wrap">
+      <div class="hero-top">
+        <div class="greeting">
+          <p id="dash-greeting-time">Good afternoon,</p>
+          <h1 id="dash-greeting-name">—</h1>
+        </div>
+        <div class="hero-icons">
+          <button class="icon-btn" aria-label="Notifications" id="dash-bell-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 0 0-6 6v3.2c0 .5-.18 1-.5 1.4L4 15.5h16l-1.5-1.9c-.32-.4-.5-.9-.5-1.4V9a6 6 0 0 0-6-6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 18.5a2.5 2.5 0 0 0 5 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+          <div style="position:relative;">
+            <button class="icon-btn" aria-label="Menu" id="dash-menu-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+            <div class="menu" id="dash-menu">
+              <a href="#" id="dash-settings-link">Settings</a>
+              <button id="dash-logout-btn" type="button">Log out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="channel-card">
+        <div>
+          <div class="label">Connected channels</div>
+          <div class="value" id="dash-channel-count">—</div>
+        </div>
+        <button class="manage" id="dash-manage-btn" type="button">Manage <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dash-main">
+    <div class="actions">
+      <button class="action" data-action="post">
+        <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+        <span>New post</span>
+      </button>
+      <button class="action" data-action="boost">
+        <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 14h6l-1 8 9-13h-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+        <span>Boost</span>
+      </button>
+      <button class="action" data-action="numbers">
+        <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="7" y="2" width="10" height="20" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M11 18h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+        <span>SMS numbers</span>
+      </button>
+      <button class="action" data-action="sms">
+        <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 12a8 8 0 1 1-3.35-6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M21 4v5h-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span>Send SMS</span>
+      </button>
+      <button class="action" data-action="inbox">
+        <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12h5l2 3h4l2-3h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="6" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>
+        <span>Inbox</span>
+      </button>
+      <button class="action" data-action="more">
+        <span class="circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/></svg></span>
+        <span>More</span>
+      </button>
     </div>
 
-    <div id="msg" class="msg" role="status"></div>
+    <div class="section">
+      <button class="section-row" id="dash-stats-row" type="button">
+        <h2>My statistics</h2>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
 
-    <form id="login-form">
-      <div class="field">
-        <label for="email">Email address</label>
-        <input id="email" type="email" placeholder="you@business.com" autocomplete="email" required>
-      </div>
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
-      </div>
+    <div class="section">
+      <div class="section-row" style="cursor:default;"><h2>Recent activity</h2></div>
+      <div id="dash-activity-list" class="activity-list"><div class="skeleton"></div></div>
+    </div>
+  </main>
 
-      <div class="row-between">
-        <label class="remember"><input type="checkbox"> Remember me</label>
-        <a href="forgot-password.html" class="forgot">Forgot password?</a>
-      </div>
-
-      <button type="submit" id="login-btn" class="btn btn-primary">Log in</button>
-    </form>
-
-    <div class="divider">or</div>
-
-    <button type="button" id="google-btn" class="btn btn-google">
-      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.87 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.81.54-1.85.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.03l2.99-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.97l2.99 2.33C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
-      Continue with Google
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-action="dashboard-active" type="button">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 11 12 4l8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9h12v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Dashboard
     </button>
+    <button class="nav-item" data-action="channels" type="button">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="15" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="15" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
+      Channels
+    </button>
+    <button class="nav-item" data-action="boost" type="button">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 14h6l-1 8 9-13h-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      Boost
+    </button>
+    <button class="nav-item" data-action="sms" type="button">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      SMS
+    </button>
+    <button class="nav-item" data-action="settings" type="button">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2.1-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2.1 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9c.6.5 1.3.9 2.1 1.2L10 21h4l.5-2.6a7 7 0 0 0 2.1-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      Settings
+    </button>
+  </nav>
+</div>
 
-    <p class="footer-note" style="margin-top:18px;">New to Relay? <a href="signup.html">Create an account</a></p>
-  </div>
-
-  <div class="badge-row">
-    <span class="badge"><span class="badge-dot"></span>Secured with Firebase Auth</span>
-  </div>
-</main>
+<div id="toast" role="status"></div>
 
 <script type="module">
-  import { auth, googleProvider, siteUrl } from "./assets/firebase-config.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
   import {
-    signInWithEmailAndPassword,
-    signInWithPopup
+    getAuth, GoogleAuthProvider, onAuthStateChanged, signOut,
+    signInWithEmailAndPassword, signInWithPopup,
+    createUserWithEmailAndPassword, sendEmailVerification,
+    applyActionCode, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset
   } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs
+  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+  import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
 
-  const form = document.getElementById("login-form");
-  const btn = document.getElementById("login-btn");
-  const googleBtn = document.getElementById("google-btn");
-  const msg = document.getElementById("msg");
+  const firebaseConfig = {
+    apiKey: "AIzaSyDp3L2FPN6rIFOwP63n9ABOVzzc7J5pBsc",
+    authDomain: "relay-78728.firebaseapp.com",
+    projectId: "relay-78728",
+    storageBucket: "relay-78728.firebasestorage.app",
+    messagingSenderId: "542755068590",
+    appId: "1:542755068590:web:3489e2a584eca6ce98ab3f",
+    measurementId: "G-86MLG8W019"
+  };
 
-  function showMessage(text, kind){
-    msg.textContent = text;
-    msg.className = "msg show " + (kind === "ok" ? "msg-ok" : "msg-err");
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const googleProvider = new GoogleAuthProvider();
+  isSupported().then((ok) => { if (ok) getAnalytics(app); }).catch(() => {});
+
+  // Absolute URL back to this same file, for email action links.
+  const SELF_URL = window.location.origin + window.location.pathname;
+
+  // ---------- splash ----------
+  document.documentElement.classList.add("rl-loading");
+  const splash = document.getElementById("rl-splash");
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      document.documentElement.classList.remove("rl-loading");
+      splash.classList.add("rl-splash-out");
+      setTimeout(() => splash.remove(), 500);
+    }, 2200);
+  });
+
+  // ---------- toast ----------
+  const toastEl = document.getElementById("toast");
+  let toastTimer;
+  function toast(text){
+    toastEl.textContent = text;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
   }
 
+  // ---------- view switching ----------
+  const views = document.querySelectorAll(".view");
+  function showView(name){
+    views.forEach((v) => v.classList.toggle("active", v.dataset.view === name));
+    document.body.classList.toggle("has-navbar", name === "dashboard");
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll("[data-goto]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const target = el.dataset.goto;
+      location.hash = target;
+      showView(target);
+    });
+  });
+
+  function showMessage(el, text, kind){
+    el.textContent = text;
+    el.className = "msg show " + (kind === "ok" ? "msg-ok" : "msg-err");
+  }
   function friendlyError(err){
     switch(err.code){
       case "auth/invalid-email": return "That email address doesn't look right.";
@@ -204,41 +582,268 @@
       case "auth/invalid-credential": return "We couldn't find an account with those details.";
       case "auth/wrong-password": return "That password doesn't match this account.";
       case "auth/too-many-requests": return "Too many attempts. Please wait a moment and try again.";
+      case "auth/email-already-in-use": return "An account with that email already exists — try logging in instead.";
+      case "auth/weak-password": return "Please choose a password with at least 8 characters.";
       default: return err.message.replace("Firebase: ", "");
     }
   }
 
-  form.addEventListener("submit", async (e) => {
+  // ---------- login ----------
+  const loginForm = document.getElementById("login-form");
+  const loginBtn = document.getElementById("login-btn");
+  const loginMsg = document.getElementById("login-msg");
+  loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    btn.disabled = true;
-    btn.textContent = "Logging in…";
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
+    loginBtn.disabled = true; loginBtn.textContent = "Logging in…";
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      showMessage("Logged in successfully. Redirecting…", "ok");
-      setTimeout(() => { window.location.href = "index.html"; }, 1200);
+      showMessage(loginMsg, "Logged in successfully. Redirecting…", "ok");
+      setTimeout(() => { location.hash = "dashboard"; }, 900);
     } catch (err) {
-      showMessage(friendlyError(err), "err");
+      showMessage(loginMsg, friendlyError(err), "err");
+      loginBtn.disabled = false; loginBtn.textContent = "Log in";
+    }
+  });
+  document.getElementById("login-google-btn").addEventListener("click", async (e) => {
+    const btn = e.currentTarget; btn.disabled = true;
+    try {
+      await signInWithPopup(auth, googleProvider);
+      showMessage(loginMsg, "Logged in successfully. Redirecting…", "ok");
+      setTimeout(() => { location.hash = "dashboard"; }, 900);
+    } catch (err) {
+      showMessage(loginMsg, friendlyError(err), "err");
       btn.disabled = false;
-      btn.textContent = "Log in";
     }
   });
 
-  googleBtn.addEventListener("click", async () => {
-    googleBtn.disabled = true;
+  // ---------- signup ----------
+  const signupForm = document.getElementById("signup-form");
+  const signupBtn = document.getElementById("signup-btn");
+  const signupMsg = document.getElementById("signup-msg");
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("signup-email").value.trim();
+    const password = document.getElementById("signup-password").value;
+    signupBtn.disabled = true; signupBtn.textContent = "Creating account…";
     try {
-      await signInWithPopup(auth, googleProvider);
-      showMessage("Logged in successfully. Redirecting…", "ok");
-      setTimeout(() => { window.location.href = "index.html"; }, 1200);
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await sendEmailVerification(cred.user, { url: SELF_URL });
+      showMessage(signupMsg, "Account created. Sending your confirmation link…", "ok");
+      document.getElementById("check-email-chip").textContent = email;
+      setTimeout(() => { showView("check-email"); }, 700);
     } catch (err) {
-      showMessage(friendlyError(err), "err");
-      googleBtn.disabled = false;
+      showMessage(signupMsg, friendlyError(err), "err");
+      signupBtn.disabled = false; signupBtn.textContent = "Create account";
     }
   });
+  document.getElementById("signup-google-btn").addEventListener("click", async (e) => {
+    const btn = e.currentTarget; btn.disabled = true;
+    try {
+      // Google accounts are already verified, so this goes straight in.
+      await signInWithPopup(auth, googleProvider);
+      showMessage(signupMsg, "Account created. Redirecting…", "ok");
+      setTimeout(() => { location.hash = "dashboard"; }, 900);
+    } catch (err) {
+      showMessage(signupMsg, friendlyError(err), "err");
+      btn.disabled = false;
+    }
+  });
+
+  // ---------- check-email resend ----------
+  document.getElementById("resend-btn").addEventListener("click", async (e) => {
+    const btn = e.currentTarget;
+    const msg = document.getElementById("resend-msg");
+    if (!auth.currentUser) { showMessage(msg, "Please log in again to resend the link.", "err"); return; }
+    btn.disabled = true; btn.textContent = "Sending…";
+    try {
+      await sendEmailVerification(auth.currentUser, { url: SELF_URL });
+      showMessage(msg, "Sent! Check your inbox (and spam) again.", "ok");
+    } catch (err) {
+      showMessage(msg, err.message.replace("Firebase: ", ""), "err");
+    }
+    btn.disabled = false; btn.textContent = "Resend confirmation link";
+  });
+
+  // ---------- forgot password ----------
+  const forgotForm = document.getElementById("forgot-form");
+  const forgotBtn = document.getElementById("forgot-btn");
+  const forgotMsg = document.getElementById("forgot-msg");
+  forgotForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("forgot-email").value.trim();
+    forgotBtn.disabled = true; forgotBtn.textContent = "Sending…";
+    try {
+      await sendPasswordResetEmail(auth, email, { url: SELF_URL });
+      showMessage(forgotMsg, "Reset link sent. Check your inbox — and your spam folder, just in case.", "ok");
+      forgotForm.reset();
+    } catch (err) {
+      showMessage(forgotMsg, friendlyError(err), "err");
+    }
+    forgotBtn.disabled = false; forgotBtn.textContent = "Send reset link";
+  });
+
+  // ---------- dashboard: menu, logout, quick actions ----------
+  const dashMenuBtn = document.getElementById("dash-menu-btn");
+  const dashMenu = document.getElementById("dash-menu");
+  dashMenuBtn.addEventListener("click", () => dashMenu.classList.toggle("open"));
+  document.addEventListener("click", (e) => {
+    if (!dashMenu.contains(e.target) && e.target !== dashMenuBtn) dashMenu.classList.remove("open");
+  });
+  document.getElementById("dash-logout-btn").addEventListener("click", async () => {
+    await signOut(auth);
+    location.hash = "login";
+  });
+  document.getElementById("dash-settings-link").addEventListener("click", (e) => {
+    e.preventDefault(); toast("Settings isn't built yet — coming soon.");
+  });
+  document.getElementById("dash-bell-btn").addEventListener("click", () => toast("Notifications aren't set up yet."));
+  document.getElementById("dash-manage-btn").addEventListener("click", () => toast("Channel management isn't built yet — coming soon."));
+  document.getElementById("dash-stats-row").addEventListener("click", () => toast("Statistics isn't built yet — coming soon."));
+
+  const actionLabels = {
+    post: "New post isn't built yet — coming soon.",
+    boost: "Boost isn't built yet — coming soon.",
+    numbers: "SMS numbers isn't built yet — coming soon.",
+    sms: "Send SMS isn't built yet — coming soon.",
+    inbox: "Inbox isn't built yet — coming soon.",
+    more: "More is coming soon.",
+    channels: "Channels isn't built yet — coming soon.",
+    settings: "Settings isn't built yet — coming soon."
+  };
+  document.querySelectorAll("[data-action]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const key = el.dataset.action;
+      if (key === "dashboard-active") return;
+      toast(actionLabels[key] || "Coming soon.");
+    });
+  });
+
+  function greetingWord(){
+    const h = new Date().getHours();
+    if (h < 12) return "Good morning,";
+    if (h < 18) return "Good afternoon,";
+    return "Good evening,";
+  }
+
+  async function loadDashboard(user){
+    document.getElementById("dash-greeting-time").textContent = greetingWord();
+    document.getElementById("dash-greeting-name").textContent =
+      user.displayName || (user.email ? user.email.split("@")[0] : "there");
+
+    try {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      const data = snap.exists() ? snap.data() : {};
+      const count = typeof data.connectedChannelsCount === "number" ? data.connectedChannelsCount : 0;
+      document.getElementById("dash-channel-count").textContent = count + (count === 1 ? " channel" : " channels");
+    } catch (err) {
+      document.getElementById("dash-channel-count").textContent = "—";
+    }
+
+    const listEl = document.getElementById("dash-activity-list");
+    try {
+      const q = query(collection(db, "users", user.uid, "activity"), orderBy("createdAt", "desc"), limit(5));
+      const results = await getDocs(q);
+      if (results.empty) {
+        listEl.innerHTML = '<div class="empty-state">No activity yet. Connect a channel or send your first message to see it here.</div>';
+      } else {
+        listEl.innerHTML = "";
+        results.forEach((docSnap) => {
+          const a = docSnap.data();
+          const when = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString() : "";
+          const item = document.createElement("div");
+          item.className = "activity-item";
+          item.innerHTML = `<div class="dot">•</div><div class="body"><div class="title">${(a.title || "Activity").toString()}</div><div class="time">${when}</div></div>`;
+          listEl.appendChild(item);
+        });
+      }
+    } catch (err) {
+      listEl.innerHTML = '<div class="empty-state">No activity yet. Connect a channel or send your first message to see it here.</div>';
+    }
+  }
+
+  // ---------- verify-email / reset-password (email link landings) ----------
+  async function handleVerifyEmail(oobCode){
+    const loading = document.getElementById("verify-loading");
+    const success = document.getElementById("verify-success");
+    const errorState = document.getElementById("verify-error");
+    try {
+      await applyActionCode(auth, oobCode);
+      loading.hidden = true; success.hidden = false;
+      setTimeout(() => { location.hash = "login"; }, 2200);
+    } catch (err) {
+      loading.hidden = true;
+      document.getElementById("verify-error-text").textContent = err.message.replace("Firebase: ", "");
+      errorState.hidden = false;
+    }
+  }
+
+  async function handleResetPassword(oobCode){
+    const loading = document.getElementById("reset-loading");
+    const formWrap = document.getElementById("reset-form-wrap");
+    const success = document.getElementById("reset-success");
+    const errorState = document.getElementById("reset-error");
+    try {
+      const email = await verifyPasswordResetCode(auth, oobCode);
+      document.getElementById("reset-for-email").textContent = "for " + email;
+      loading.hidden = true; formWrap.hidden = false;
+
+      document.getElementById("reset-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("reset-btn");
+        const password = document.getElementById("reset-password-input").value;
+        btn.disabled = true; btn.textContent = "Saving…";
+        try {
+          await confirmPasswordReset(auth, oobCode, password);
+          formWrap.hidden = true; success.hidden = false;
+          setTimeout(() => { location.hash = "login"; }, 2200);
+        } catch (err) {
+          btn.disabled = false; btn.textContent = "Set new password";
+          toast(err.message.replace("Firebase: ", ""));
+        }
+      }, { once: true });
+    } catch (err) {
+      loading.hidden = true;
+      document.getElementById("reset-error-text").textContent = err.message.replace("Firebase: ", "");
+      errorState.hidden = false;
+    }
+  }
+
+  // ---------- router ----------
+  let currentUser = null;
+
+  function route(){
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode");
+    const oobCode = params.get("oobCode");
+
+    if (mode === "verifyEmail" && oobCode) { showView("verify-email"); handleVerifyEmail(oobCode); return; }
+    if (mode === "resetPassword" && oobCode) { showView("reset-password"); handleResetPassword(oobCode); return; }
+
+    const hash = (location.hash || "").slice(1);
+
+    if (hash === "dashboard") {
+      if (currentUser) { showView("dashboard"); loadDashboard(currentUser); }
+      else { location.hash = "login"; }
+      return;
+    }
+    if (["login", "signup", "forgot-password", "check-email"].includes(hash)) {
+      showView(hash);
+      return;
+    }
+    // no/unknown hash: send returning logged-in users straight to their dashboard
+    if (currentUser) { location.hash = "dashboard"; }
+    else { showView("login"); }
+  }
+
+  window.addEventListener("hashchange", route);
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    route();
+  });
+  route();
 </script>
-<script type="module" src="./assets/splash.js"></script>
 
 </body>
 </html>
